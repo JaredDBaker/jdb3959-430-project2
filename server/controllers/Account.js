@@ -74,7 +74,7 @@ const signup = (request, response) => {
       console.log(err);
 
       if (err.code === 11000) {
-        return res.status(400).json({ erro: 'Username already in use.' });
+        return res.status(400).json({ error: 'Username already in use.' });
       }
 
       return res.status(400).json({ error: 'An error occurred' });
