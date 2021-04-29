@@ -40,7 +40,7 @@ const WhatIfSchema = new mongoose.Schema({
   createdDate: {
     type: Date,
     default: Date.now,
-  }, 
+  },
 });
 
 WhatIfSchema.statics.toAPI = (doc) => ({
@@ -57,9 +57,7 @@ WhatIfSchema.statics.findByOwner = (ownerID, callback) => {
   return WhatIfModel.find(search).select('author question answers createdDate').lean().exec(callback);
 };
 
-WhatIfSchema.statics.findAll = (callback) => {
-  return WhatIfModel.find().select('author question answers createdDate').lean().exec(callback);
-};
+WhatIfSchema.statics.findAll = (callback) => WhatIfModel.find().select('author question answers createdDate').lean().exec(callback);
 
 WhatIfSchema.statics.delete = (id, callback) => {
   console.log(id);

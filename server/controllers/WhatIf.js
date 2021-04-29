@@ -62,10 +62,10 @@ const getWhatIfs = (request, response) => {
 };
 
 const getAllWhatIfs = (request, response) => {
-  const req = request;
+  // const req = request;
   const res = response;
 
-  return WhatIf.WhatIfModel.findAll( (err, docs) => {
+  return WhatIf.WhatIfModel.findAll((err, docs) => {
     if (err) {
       console.log(err);
       return res.status(400).json({ error: 'An error occurred' });
@@ -78,7 +78,7 @@ const getAllWhatIfs = (request, response) => {
 const deleteWhatIf = (request, response) => {
   const req = request;
   const res = response;
-  //console.log(req);
+  // console.log(req);
   return WhatIf.WhatIfModel.delete(req.body._id, (err, docs) => {
     if (err) {
       console.log(err);
