@@ -2,7 +2,7 @@
 
 var handleLogin = function handleLogin(e) {
   e.preventDefault();
-  $("#domoMessage").animate({
+  $("#whatIfMessage").animate({
     width: 'hide'
   }, 350);
 
@@ -18,7 +18,7 @@ var handleLogin = function handleLogin(e) {
 
 var handleSignup = function handleSignup(e) {
   e.preventDefault();
-  $("#domoMessage").animate({
+  $("#whatIfMessage").animate({
     width: 'hide'
   }, 350);
 

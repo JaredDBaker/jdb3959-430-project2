@@ -1,158 +1,172 @@
-const handleDomo = (e) => {
+const handleWhatIf = (e) => {
     e.preventDefault();
 
-    $("#domoMessage").animate({width:'hide'},350);
+    $("#errorMessage").animate({width:'hide'},350);
 
-    if($("#domoName").val() == '' || $("#domoAge").val() == '') {
-        handleError("RAWR! All fields are required");
+    if($("#question").val() == '') {
+        handleError("All fields are required");
         return false;
     }
-
-    sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function () {
-        loadDomosFromServer();
+    console.log($("#whatIfForm").serialize());
+    sendAjax('POST', $("#whatIfForm").attr("action"), $("#whatIfForm").serialize(), function () {
+        loadWhatIfsFromServer($("#whatIfForm").serialize().csrf);
     });
 
     return false;
 };
 
-const DomoForm = (props) => {
+const handleAnswer = (e) => {
+    e.preventDefault();
+
+    $("#errorMessage").animate({width:'hide'},350);
+
+    if($("#answer").val() == '') {
+        handleError("All fields are required");
+        return false;
+    }
+    console.log($("#answerForm").serialize());
+    sendAjax('POST', $("#answerForm").attr("action"), $("#answerForm").serialize(), function () {
+        loadWhatIfsFromServer($("#answerForm").serialize().csrf);
+    });
+
+    return false;
+};
+
+const WhatIfForm = (props) => {
+    //console.log(props);
     return (
-        <form id="domoForm"
-            onSubmit={handleDomo}
-            name="domoForm"
+        <form id="whatIfForm"
+            onSubmit={handleWhatIf}
+            name="whatIfForm"
             action="/maker"
             method="POST"
-            className="domoForm"
+            className="whatIfForm"
         >
-            <label htmlFor="name">Name: </label>
-            <input id="domoName" type="text" name="name" placeholder="Domo Name" />
-            <label htmlFor="age">Age: </label>
-            <input id="domoAge" type="text" name="age" placeholder="Domo Age"/>
-            <label htmlFor="str">Str: </label>
-            <input id="domoStr" type="text" name="str" placeholder="Domo Str"/>
-            <label htmlFor="int">Int: </label>
-            <input id="domoInt" type="text" name="int" placeholder="Domo Int"/>
-            <label htmlFor="dex">Dex: </label>
-            <input id="domoDex" type="text" name="dex" placeholder="Domo Dex"/>
+            <label htmlFor="question">Question: </label>
+            <input id="question" type="text" name="question" placeholder="What if?" />
             <input type="hidden" name="_csrf" value={props.csrf} />
-            <input className="makeDomoSubmit" type="submit" value="Make Domo" />
+            <input className="makeWhatIfSubmit" type="submit" value="Make What If" />
         </form>
     );
 };
 
-const DomoStats = (props) => {
-    if(props.domos.length === 0){
+
+const WhatIfList = function(props) {
+    //console.log(props);
+    if(props.whatIfs.length === 0){
         return (
-            <div className="domoList">
-                <h3 className="emptyDomo">No Domos yet</h3>
+            <div className="whatIfList">
+                <h3 className="emptyWhat">No What Ifs yet</h3>
             </div>
         );
     }
+    //console.log(props.csrf);
+    const whatifNodes = props.whatIfs.map(function(whatif) {
+        return (
+            <div key={whatif._id} className="whatif">
+                <h3 > {whatif.question} </h3>
+                <h3 > {whatif.author} </h3>
+                <h3 > {whatif.createdDate} </h3>
+                <form id="deleteForm"
+                    onSubmit={deleteWhatIf}
+                    name="deleteForm"
+                    action="/deleteWhatIf"
+                    method="DELETE"
+                    className="deleteForm"
+                >
+                    <input type="hidden" name="_id" value={whatif._id} />
+                    <input type="hidden" name="_csrf" value={props.csrf} />
+                    <input className="delete" type="submit" value="Delete" />                    
+                </form>
 
-    let oldest = props.domos[0];
-    let youngest = props.domos[0];
-    let strongest = props.domos[0];
-    let smartest = props.domos[0];
-    let fastest = props.domos[0];
-    let mostPower = props.domos[0];
-    let weakest = props.domos[0];
-    let totalStats = props.domos[0].str + props.domos[0].int + props.domos[0].dex;
-    let totalAge = props.domos[0].age;
-
-    for(let i = 1; i < props.domos.length; i+=1){
-        if(props.domos[i].age > oldest.age){
-            oldest = props.domos[i];
-        }
-        if(props.domos[i].age < youngest.age){
-            youngest = props.domos[i];
-        }
-        if(props.domos[i].str > strongest.str){
-            strongest = props.domos[i];
-        }
-        if(props.domos[i].int > smartest.int){
-            smartest = props.domos[i];
-        }
-        if(props.domos[i].dex > fastest.dex){
-            fastest = props.domos[i];
-        }
-        if(props.domos[i].str + props.domos[i].int + props.domos[i].dex > mostPower.str + mostPower.int + mostPower.dex){
-            mostPower = props.domos[i];
-        }
-        if(props.domos[i].str + props.domos[i].int + props.domos[i].dex < weakest.str + weakest.int + weakest.dex){
-            weakest = props.domos[i];
-        }
-        totalStats += props.domos[i].str + props.domos[i].int + props.domos[i].dex;
-        totalAge += props.domos[i].age;
-    }
-
+            </div>
+        );
+    });
     return (
-        <div id="domoStats">
-            <h3 id="stat">Oldest: {oldest.name} | Age: {oldest.age}</h3>
-            <h3 id="stat">Youngest: {youngest.name} | Age: {youngest.age}</h3>
-            <h3 id="stat">Srongest: {strongest.name} | Str: {strongest.str}</h3>
-            <h3 id="stat">Smartest: {smartest.name} | Int: {smartest.int}</h3>
-            <h3 id="stat">Speediest: {fastest.name} | Dex: {fastest.dex}</h3>
-            <h3 id="stat">Most Powerful: {mostPower.name} | Stat Total: {mostPower.str + mostPower.int + mostPower.dex}</h3>
-            <h3 id="stat">Weakest: {weakest.name} | Stat Total: {weakest.str + weakest.int + weakest.dex}</h3>
-            <h3 id="stat">Total Stats: {totalStats}</h3>
-            <h3 id="stat">Total Age: {totalAge}</h3>
-            <h3 id="stat">Total Domos: {props.domos.length}</h3>
+        <div className="whatifList">
+            {whatifNodes}
         </div>
     );
-};
+}; 
 
-const DomoList = function(props) {
-    if(props.domos.length === 0){
+const WhatIfStats = function(props) {
+    //console.log(props);
+    if(props.whatIfs.length === 0){
         return (
-            <div className="domoList">
-                <h3 className="emptyDomo">No Domos yet</h3>
+            <div className="whatIfStats">
+                <h3 className="emptyWhat">No What Ifs yet</h3>
             </div>
         );
     }
-
-    const domoNodes = props.domos.map(function(domo) {
+    //console.log(props.csrf);
+    const whatifNodes = props.whatIfs.map(function(whatif) {
         return (
-            <div key={domo._id} className="domo">
-                <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-                <h3 className="domoName"> Name: {domo.name} </h3>
-                <h3 className="domoAge"> Str: {domo.str} </h3>
-                <h3 className="domoAge"> Age: {domo.age} </h3>  
-                <h3 className="domoAge"> Dex: {domo.dex} </h3>
-                <h3 className="domoAge"> Int: {domo.int} </h3>
+            <div key={whatif._id} className="whatif">
+                <h3 > {whatif.question} </h3>
+                <h3 > {whatif.author} </h3>
+                <h3 > {whatif.createdDate} </h3>
+                <form id="answerForm"
+                    onSubmit={handleAnswer}
+                    name="answerForm"
+                    action="/answerWhatIf"
+                    method="POST"
+                    className="answerForm"
+                >
+                    <input type="hidden" name="_csrf" value={props.csrf} />
+                    <input id="answer" type="text" name="answer" placeholder="your answer" />  
+                    <input className="answerSubmit" type="submit" value="Answer What If" />                
+                </form>
+
             </div>
         );
     });
-
     return (
-        <div className="domoList">
-            {domoNodes}
+        <div className="whatifList">
+            {whatifNodes}
         </div>
     );
-};
+}; 
 
-const loadDomosFromServer = () => {
-    sendAjax('GET', '/getDomos', null, (data) => {
+const loadWhatIfsFromServer = (csrf) => {
+    sendAjax('GET', '/getWhatIfs', null, (data) => {
+        //console.log(data);
         ReactDOM.render(
-            <DomoList domos={data.domos} />, document.querySelector('#domos')
+            <WhatIfList whatIfs={data.whatIf} csrf={csrf} />, document.querySelector('#WhatIfs')
         );
     });
 };
 
-const createStatsWindow = () => {
-    sendAjax('GET', '/getDomos', null, (data) => {
+const loadAllWhatIfsFromServer = (csrf) => {
+    sendAjax('GET', '/getAllWhatIfs', null, (data) => {
+        //console.log(data);
         ReactDOM.render(
-            <DomoStats domos={data.domos} />,
-            document.querySelector("#domos")
+            <WhatIfStats whatIfs={data.whatIf} csrf={csrf}/>, document.querySelector('#WhatIfs')
         );
     });
 };
 
-const createListWindow = () => {
+const deleteWhatIf = (e) => {
+    console.log($("#deleteForm").serialize().csrf);
+    e.preventDefault();
+    sendAjax('DELETE', '/maker', $("#deleteForm").serialize(), function () {
+        loadWhatIfsFromServer($("#deleteForm").serialize().csrf);
+    });
+};
+
+const createStatsWindow = (csrf) => {
     ReactDOM.render(
-        <DomoList domos={[]} />, 
-        document.querySelector("#domos")
+        <WhatIfStats whatIfs={[]} />, 
+        document.querySelector("#WhatIfs")
     );
-    loadDomosFromServer();
+    loadAllWhatIfsFromServer(csrf);
+};
+
+const createListWindow = (csrf) => {
+    ReactDOM.render(
+        <WhatIfList whatIfs={[]} csrf={csrf}/>, 
+        document.querySelector("#WhatIfs")
+    );
+    loadWhatIfsFromServer(csrf);
 }
 
 const setup = function(csrf) {
@@ -172,16 +186,16 @@ const setup = function(csrf) {
     });
 
     ReactDOM.render(
-        <DomoForm csrf={csrf} />, 
-        document.querySelector("#makeDomo")
+        <WhatIfForm csrf={csrf} />, 
+        document.querySelector("#makeWhatIf")
     );
 
     ReactDOM.render(
-        <DomoList domos={[]} />, 
-        document.querySelector("#domos")
+        <WhatIfList whatIfs={[]} csrf={csrf} />, 
+        document.querySelector("#WhatIfs")
     );
 
-    loadDomosFromServer();
+    loadWhatIfsFromServer(csrf);
 };
 
 const getToken = () => {

@@ -14,7 +14,7 @@ const redis = require('redis');
 
 const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
-const dbURL = 'mongodb+srv://jdbaker:Nice5guymad@cluster0.nofuf.mongodb.net/DomoMaker';
+const dbURL = 'mongodb+srv://jdbaker:Nice5guymad@cluster0.nofuf.mongodb.net/WhatIf';
 
 const mongooseOptions = {
   useNewUrlParser: true,
