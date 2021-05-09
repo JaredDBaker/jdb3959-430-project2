@@ -44,7 +44,7 @@ var LoginWindow = function LoginWindow(props) {
       action: "/login",
       method: "POST",
       className: "mainForm"
-    }, /*#__PURE__*/React.createElement("label", {
+    }, /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement("h1", null, "Sign In"), /*#__PURE__*/React.createElement("label", {
       htmlFor: "username"
     }, "Username: "), /*#__PURE__*/React.createElement("input", {
       id: "user",
@@ -78,7 +78,7 @@ var SignupWindow = function SignupWindow(props) {
       action: "/signup",
       method: "POST",
       className: "mainForm"
-    }, /*#__PURE__*/React.createElement("label", {
+    }, /*#__PURE__*/React.createElement("hr", null), /*#__PURE__*/React.createElement("h1", null, "Sign Up"), /*#__PURE__*/React.createElement("label", {
       htmlFor: "username"
     }, "Username: "), /*#__PURE__*/React.createElement("input", {
       id: "user",
@@ -111,33 +111,32 @@ var SignupWindow = function SignupWindow(props) {
   );
 };
 
-var HomeWindow = function HomeWindow(props) {
-  return (/*#__PURE__*/React.createElement("h1", null, "Welcome to What IF?")
-  );
-};
-
 var createLoginWindow = function createLoginWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(LoginWindow, {
     csrf: csrf
   }), document.querySelector("#content"));
+  ReactDOM.render( /*#__PURE__*/React.createElement("hr", null), document.querySelector("#WhatIfs"));
 };
 
 var createSignupWindow = function createSignupWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(SignupWindow, {
     csrf: csrf
   }), document.querySelector("#content"));
+  ReactDOM.render( /*#__PURE__*/React.createElement("hr", null), document.querySelector("#WhatIfs"));
 };
 
 var createHomeWindow = function createHomeWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(HomeWindow, {
     csrf: csrf
   }), document.querySelector("#content"));
+  ReactDOM.render( /*#__PURE__*/React.createElement("hr", null), document.querySelector("#WhatIfs"));
 };
 
 var setup = function setup(csrf) {
   var loginButton = document.querySelector("#loginbutton");
   var signupButton = document.querySelector("#signupButton");
   var homeButton = document.querySelector("#homeButton");
+  var searchButton = document.querySelector("#searchButton");
   signupButton.addEventListener("click", function (e) {
     e.preventDefault();
     createSignupWindow(csrf);
@@ -152,6 +151,10 @@ var setup = function setup(csrf) {
     e.preventDefault();
     createHomeWindow(csrf);
     return false;
+  });
+  searchButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    createSearchWindow(csrf);
   });
   createHomeWindow(csrf); //default view
 };
@@ -194,4 +197,134 @@ var sendAjax = function sendAjax(type, action, data, success) {
       handleError(messageObj.error);
     }
   });
+};
+
+var WhatIfSearch = function WhatIfSearch(props) {
+  //console.log(props);
+  if (props.whatIfs.length === 0) {
+    return (/*#__PURE__*/React.createElement("div", {
+        className: "whatIfStats"
+      }, /*#__PURE__*/React.createElement("h3", {
+        className: "emptyWhat"
+      }, "No What Ifs yet"))
+    );
+  } //console.log(props.csrf);
+
+
+  var whatifNodes = props.whatIfs.map(function (whatif) {
+    //console.log(whatif.e);
+    return (/*#__PURE__*/React.createElement("div", {
+        key: whatif._id,
+        className: "whatif"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "info"
+      }, /*#__PURE__*/React.createElement("h3", null, " ", whatif.question, " "), /*#__PURE__*/React.createElement("h4", null, "Author: ", whatif.author, " "), /*#__PURE__*/React.createElement("h5", null, "Posted on: ", whatif.createdDate, " ")), /*#__PURE__*/React.createElement("div", {
+        className: "answers"
+      }, /*#__PURE__*/React.createElement("h4", null, "Answers: "), /*#__PURE__*/React.createElement("ul", null, " ", whatif.answers.map(function (value, index) {
+        return (/*#__PURE__*/React.createElement("li", {
+            key: index
+          }, value)
+        );
+      }), " "), /*#__PURE__*/React.createElement("form", {
+        id: "answerForm" + whatif._id,
+        onSubmit: handleAnswer,
+        name: "answerForm",
+        action: "/addAnswer",
+        method: "PUT",
+        className: "answerForm"
+      }, /*#__PURE__*/React.createElement("input", {
+        type: "hidden",
+        name: "_csrf",
+        value: props.csrf || ''
+      }), /*#__PURE__*/React.createElement("input", {
+        type: "hidden",
+        name: "_id",
+        value: whatif._id
+      }), /*#__PURE__*/React.createElement("input", {
+        className: "answer",
+        type: "text",
+        name: "answer",
+        placeholder: "your answer"
+      }), /*#__PURE__*/React.createElement("input", {
+        className: "answerSubmit",
+        type: "submit",
+        value: "Answer What If"
+      }))))
+    );
+  });
+  return (/*#__PURE__*/React.createElement("div", {
+      className: "whatifList"
+    }, whatifNodes)
+  );
+};
+
+var loadAllWhatIfsFromServer = function loadAllWhatIfsFromServer(csrf) {
+  sendAjax('GET', '/getAllWhatIfs', null, function (data) {
+    //console.log(data);
+    ReactDOM.render( /*#__PURE__*/React.createElement(WhatIfSearch, {
+      whatIfs: data.whatIf,
+      csrf: csrf
+    }), document.querySelector('#WhatIfs'));
+  });
+};
+
+var createSearchWindow = function createSearchWindow(csrf) {
+  ReactDOM.render( /*#__PURE__*/React.createElement("h1", null, "Here is all the What Ifs"), document.querySelector("#Content"));
+
+  if (document.querySelector("#makeWhatIf") != null) {
+    ReactDOM.render( /*#__PURE__*/React.createElement(WhatIfForm, {
+      csrf: csrf
+    }), document.querySelector("#makeWhatIf"));
+  }
+
+  ;
+  ReactDOM.render( /*#__PURE__*/React.createElement(WhatIfSearch, {
+    whatIfs: []
+  }), document.querySelector("#WhatIfs"));
+  loadAllWhatIfsFromServer(csrf);
+};
+
+var handleAnswer = function handleAnswer(e) {
+  e.preventDefault(); //console.log(e.target.answer.value);
+
+  $("#errorMessage").animate({
+    width: 'hide'
+  }, 350);
+
+  if ($("#" + e.target.id).serialize().answer == '') {
+    handleError("Answer fields are required");
+    return false;
+  } //console.log($("#"+e.target.id).serialize());
+  //let token = $("#"+e.target.id).serialize().csrf;
+
+
+  sendAjax('PUT', $("#" + e.target.id).attr("action"), $("#" + e.target.id).serialize(), function () {
+    loadAllWhatIfsFromServer(getToken());
+  });
+  $("#" + e.target.id)[0].reset();
+  return false;
+};
+
+var HomeWindow = function HomeWindow(props) {
+  return (/*#__PURE__*/React.createElement("section", {
+      id: "home"
+    }, /*#__PURE__*/React.createElement("div", {
+      id: "explain"
+    }, /*#__PURE__*/React.createElement("h1", null, "Welcome to What IF?"), /*#__PURE__*/React.createElement("p", null, "Hello and welcome"), /*#__PURE__*/React.createElement("h3", null, "Use '/getAllWhatIfs' to recieve the list of all the questions Posted")), /*#__PURE__*/React.createElement("div", {
+      id: "preview"
+    }, /*#__PURE__*/React.createElement("h1", null, "Preview:")))
+  );
+};
+
+var createHomeWindow = function createHomeWindow(csrf) {
+  ReactDOM.render( /*#__PURE__*/React.createElement(HomeWindow, {
+    csrf: csrf
+  }), document.querySelector("#content"));
+  ReactDOM.render( /*#__PURE__*/React.createElement("hr", null), document.querySelector("#WhatIfs"));
+
+  if (document.querySelector("#makeWhatIf") != null) {
+    ReactDOM.render( /*#__PURE__*/React.createElement("br", null), document.querySelector("#makeWhatIf"));
+  }
+
+  ;
 };

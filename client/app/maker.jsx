@@ -8,31 +8,13 @@ const handleWhatIf = (e) => {
         return false;
     }
     console.log($("#whatIfForm").serialize());
-    let token = $("#whatIfForm").serialize().csrf;
     sendAjax('POST', $("#whatIfForm").attr("action"), $("#whatIfForm").serialize(), function () {
-        loadWhatIfsFromServer(token);
+        loadWhatIfsFromServer(getToken());
     });
     $("#whatIfForm")[0].reset();
     return false;
 };
 
-const handleAnswer = (e) => {
-    e.preventDefault();
-    //console.log(e.target.answer.value);
-    $("#errorMessage").animate({width:'hide'},350);
-
-    if($("#"+e.target.id).serialize().answer == '') {
-        handleError("Answer fields are required");
-        return false;
-    }
-    console.log($("#"+e.target.id).serialize());
-    let token = $("#"+e.target.id).serialize().csrf;
-    sendAjax('PUT', $("#"+e.target.id).attr("action"), $("#"+e.target.id).serialize(), function () {
-        loadAllWhatIfsFromServer(token);
-    });
-    $("#"+e.target.id)[0].reset();
-    return false;
-}; 
 
 const WhatIfForm = (props) => {
     //console.log(props);
@@ -44,7 +26,7 @@ const WhatIfForm = (props) => {
             method="POST"
             className="whatIfForm"
         >
-            <label htmlFor="question">Question: </label>
+            <label htmlFor="question">Ask a Question: </label>
             <input id="question" type="text" name="question" placeholder="What if?" />
             <input type="hidden" name="_csrf" value={props.csrf} />
             <input className="makeWhatIfSubmit" type="submit" value="Make What If" />
@@ -68,26 +50,29 @@ const WhatIfList = function(props) {
         //console.log(whatif);
         return (
             <div key={whatif._id} className="whatif">
-                <h3 > {whatif.question} </h3>
-                <h4 >Author: {whatif.author} </h4>
-                <h5 >Posted on: {whatif.createdDate} </h5>
-                <h4>Answers: </h4>
-                <ol > {whatif.answers.map((value, index) => {
-                    return <li key = {index}>{value}</li>
-                })} </ol>
-                {/* <input className="delete" type="submit" value="Delete" onClick={deleteWhatIf}/>       */}
-                <form id={"deleteForm"+whatif._id}
-                    onSubmit={deleteWhatIf}
-                    name="deleteForm"
-                    action="/maker"
-                    method="DELETE"
-                    className="deleteForm"
-                >
-                    <input type="hidden" name="_id" value={whatif._id} readOnly={true} />
-                    <input type="hidden" name="_csrf" value={props.csrf || ''} readOnly={true}/>
-                    <input className="delete" type="submit" value="Delete" />                    
-                </form>
-
+                <div className="info">
+                    <h3 > {whatif.question} </h3>
+                    <h4 >Author: {whatif.author} </h4>
+                    <h5 >Posted on: {whatif.createdDate} </h5>
+                </div>
+                <div className="answers">
+                    <h4>Answers: </h4>
+                    <ol > {whatif.answers.map((value, index) => {
+                        return <li key = {index}>{value}</li>
+                    })} </ol>
+                    {/* <input className="delete" type="submit" value="Delete" onClick={deleteWhatIf}/>       */}
+                    <form id={"deleteForm"+whatif._id}
+                        onSubmit={deleteWhatIf}
+                        name="deleteForm"
+                        action="/maker"
+                        method="DELETE"
+                        className="deleteForm"
+                    >
+                        <input type="hidden" name="_id" value={whatif._id} readOnly={true} />
+                        <input type="hidden" name="_csrf" value={props.csrf || ''} readOnly={true}/>
+                        <input className="delete" type="submit" value="Delete" />                    
+                    </form>
+                </div>
             </div>
         );
     });
@@ -98,48 +83,7 @@ const WhatIfList = function(props) {
     );
 }; 
 
-const WhatIfStats = function(props) {
-    //console.log(props);
-    if(props.whatIfs.length === 0){
-        return (
-            <div className="whatIfStats">
-                <h3 className="emptyWhat">No What Ifs yet</h3>
-            </div>
-        );
-    }
-    //console.log(props.csrf);
-    const whatifNodes = props.whatIfs.map(function(whatif) {
-        //console.log(whatif.e);
-        return (
-            <div key={whatif._id} className="whatif">
-                <h3 > {whatif.question} </h3>
-                <h4 >Author: {whatif.author} </h4>
-                <h5 > {whatif.createdDate} </h5>
-                <ol > {whatif.answers.map((value, index) => {
-                    return <li key = {index}>{value}</li>
-                })} </ol>
-                <form id={"answerForm"+whatif._id}
-                    onSubmit={handleAnswer}
-                    name="answerForm"
-                    action="/addAnswer"
-                    method="PUT"
-                    className="answerForm"
-                >
-                    <input type="hidden" name="_csrf" value={props.csrf || ''} />
-                    <input type="hidden" name="_id" value={whatif._id} />
-                    <input id="answer" type="text" name="answer" placeholder="your answer" />  
-                    <input className="answerSubmit" type="submit" value="Answer What If" />                
-                </form>
 
-            </div>
-        );
-    });
-    return (
-        <div className="whatifList">
-            {whatifNodes}
-        </div>
-    );
-}; 
 
 const loadWhatIfsFromServer = (csrf) => {
     sendAjax('GET', '/getWhatIfs', null, (data) => {
@@ -150,33 +94,25 @@ const loadWhatIfsFromServer = (csrf) => {
     });
 };
 
-const loadAllWhatIfsFromServer = (csrf) => {
-    sendAjax('GET', '/getAllWhatIfs', null, (data) => {
-        //console.log(data);
-        ReactDOM.render(
-            <WhatIfStats whatIfs={data.whatIf} csrf={csrf}/>, document.querySelector('#WhatIfs')
-        );
-    });
-};
-
 const deleteWhatIf = (e) => {
-    console.log($("#"+e.target.id).serialize());
-    let token = $("#"+e.target.id).serialize().csrf;
+    //console.log($("#"+e.target.id).serialize());
+    //let token = $("#"+e.target.id).serialize().csrf;
     e.preventDefault();
     sendAjax('DELETE', '/maker', $("#"+e.target.id).serialize(), function () {
-        loadWhatIfsFromServer(token);
+        loadWhatIfsFromServer(getToken());
     });
 };
 
-const createStatsWindow = (csrf) => {
-    ReactDOM.render(
-        <WhatIfStats whatIfs={[]} />, 
-        document.querySelector("#WhatIfs")
-    );
-    loadAllWhatIfsFromServer(csrf);
-};
 
 const createListWindow = (csrf) => {
+    ReactDOM.render(
+        <h1>All of your What Ifs</h1>, 
+        document.querySelector("#Content")
+    );
+    ReactDOM.render(
+        <WhatIfForm csrf={csrf} />, 
+        document.querySelector("#makeWhatIf")
+    );
     ReactDOM.render(
         <WhatIfList whatIfs={[]} csrf={csrf}/>, 
         document.querySelector("#WhatIfs")
@@ -184,13 +120,29 @@ const createListWindow = (csrf) => {
     loadWhatIfsFromServer(csrf);
 }
 
-const setup = function(csrf) {
-    const statsButton = document.querySelector("#statsButton");
-    const listButton = document.querySelector("#listButton");
+// const createHomeWindow = (csrf) => {
+//     ReactDOM.render(
+//         <HomeWindow csrf={csrf} />,
+//         document.querySelector("#content")
+//     );
+//     ReactDOM.render(
+//         <hr></hr>, 
+//         document.querySelector("#WhatIfs")
+//     );
+//     ReactDOM.render(
+//         <br></br>, 
+//         document.querySelector("#makeWhatIf")
+//     );
+// };
 
-    statsButton.addEventListener("click", (e) => {
+const setup = function(csrf) {
+    const searchButton = document.querySelector("#searchButton");
+    const listButton = document.querySelector("#listButton");
+    const homeButton = document.querySelector("#homeButton");
+
+    searchButton.addEventListener("click", (e) => {
         e.preventDefault();
-        createStatsWindow(csrf);
+        createSearchWindow(csrf);
         return false;
     });
 
@@ -200,11 +152,20 @@ const setup = function(csrf) {
         return false;
     });
 
+    homeButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        createHomeWindow(csrf);
+        return false;
+    });
+
     ReactDOM.render(
         <WhatIfForm csrf={csrf} />, 
         document.querySelector("#makeWhatIf")
     );
-
+    ReactDOM.render(
+        <h1>All of your What Ifs</h1>, 
+        document.querySelector("#Content")
+    );
     ReactDOM.render(
         <WhatIfList whatIfs={[]} csrf={csrf} />, 
         document.querySelector("#WhatIfs")

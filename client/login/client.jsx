@@ -43,6 +43,8 @@ const LoginWindow = (props) => {
             method="POST"
             className="mainForm"
             >
+                <hr></hr>
+            <h1>Sign In</h1>
             <label htmlFor="username">Username: </label>
             <input id="user" type="text" name="username" placeholder="usename"/>
             <label htmlFor="pass">Password: </label>
@@ -63,6 +65,8 @@ const SignupWindow = (props) => {
             method="POST"
             className="mainForm"
             >
+                <hr></hr>
+            <h1>Sign Up</h1>
             <label htmlFor="username">Username: </label>
             <input id="user" type="text" name="username" placeholder="usename"/>
             <label htmlFor="pass">Password: </label>
@@ -76,16 +80,16 @@ const SignupWindow = (props) => {
     );
 };
 
-const HomeWindow = (props) => {
-    return (
-        <h1>Welcome to What IF?</h1>
-    );
-};
+
  
 const createLoginWindow = (csrf) => {
     ReactDOM.render(
         <LoginWindow csrf={csrf} />,
         document.querySelector("#content")
+    );
+    ReactDOM.render(
+        <hr></hr>, 
+        document.querySelector("#WhatIfs")
     );
 };
 
@@ -94,6 +98,10 @@ const createSignupWindow = (csrf) => {
         <SignupWindow csrf={csrf} />,
         document.querySelector("#content")
     );
+    ReactDOM.render(
+        <hr></hr>, 
+        document.querySelector("#WhatIfs")
+    );
 };
 
 const createHomeWindow = (csrf) => {
@@ -101,18 +109,23 @@ const createHomeWindow = (csrf) => {
         <HomeWindow csrf={csrf} />,
         document.querySelector("#content")
     );
+    ReactDOM.render(
+        <hr></hr>, 
+        document.querySelector("#WhatIfs")
+    );
 };
 
 const setup = (csrf) => {
     const loginButton = document.querySelector("#loginbutton");
     const signupButton = document.querySelector("#signupButton");
     const homeButton = document.querySelector("#homeButton");
+    const searchButton = document.querySelector("#searchButton");
 
     signupButton.addEventListener("click", (e) => {
         e.preventDefault();
         createSignupWindow(csrf);
         return false;
-    });
+    }); 
 
     loginButton.addEventListener("click", (e) => {
         e.preventDefault();
@@ -123,6 +136,10 @@ const setup = (csrf) => {
         e.preventDefault();
         createHomeWindow(csrf);
         return false;
+    });
+    searchButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        createSearchWindow(csrf);
     });
 
     createHomeWindow(csrf); //default view

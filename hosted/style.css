@@ -19,6 +19,7 @@ nav {
     width: 100%;
     height: 50px;
     background-color: #C14953;
+    border: 2px solid #4c4c47;
 }
 
 nav:nth-child(1) {
@@ -51,7 +52,7 @@ nav:nth-child(1) {
 .whatIfForm {
     border: 2px solid #4c4c47;
     height: 40px;
-    width: 1400px;
+    width: 100%;
     margin-top:0px;
     padding-top:10px;
     background-color: #C14953;
@@ -61,7 +62,7 @@ nav:nth-child(1) {
 
 .whatIfForm label {
     display: inline-block;
-    width: 75px;
+    width: 15%;
     margin-left: 10px;
     font-size: 1.2em;
     float: left;
@@ -194,18 +195,18 @@ nav:nth-child(1) {
 #whatIf {
     width: 40%;
     min-width: 400px;
-    border: 2px solid #C14953;
+    border: 2px solid #4c4c47;
     border-radius: 4px;
     margin: 0 auto;
     margin-top: 100px;
 }
 
 .whatIf {
-    width: 95%;
+    width: 80%;
     margin: 0 auto;
     margin-top: 2px;
     margin-bottom: 2px;
-    border: 2px solid #C14953;
+    border: 2px solid #4c4c47;
     border-radius: 4px;
     background-color: #C14953;
     color: #E5DCC5;
@@ -275,5 +276,39 @@ h1{
     color:#E5DCC5;
     margin: auto;
     width: 50%;
-    padding: 5%
+    padding: 5%;
+    font-size: 2em;
+}
+#home{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+#explain {
+    grid-column: 1;
+    color:#E5DCC5;
+}
+
+#preview {
+    grid-column: 2;
+}
+
+main{
+    display: block;
+
+}
+#makeWhatIf{
+    height: 55px;
+}
+#WhatIfs {
+    margin: auto;
+}
+.whatIf{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.info{
+    grid-column: 1;
+}
+.answers{
+    grid-column: 2;
 }
