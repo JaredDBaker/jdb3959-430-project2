@@ -60,11 +60,25 @@ WhatIfSchema.statics.findByOwner = (ownerID, callback) => {
 WhatIfSchema.statics.findAll = (callback) => WhatIfModel.find().select('author question answers createdDate').lean().exec(callback);
 
 WhatIfSchema.statics.delete = (id, callback) => {
-  console.log(id);
+  // console.log(id);
   const search = {
-    _id: convertID(id),
+    _id: id,
   };
+  console.log(search);
   return WhatIfModel.deleteOne(search).exec(callback);
+};
+
+WhatIfSchema.statics.addAnswer = (data, callback) => {
+  console.log(data);
+  const search = {
+    _id: data._id,
+  };
+  // console.log(convertID(data._id));
+  return WhatIfModel.updateOne(search, {
+    $addToSet: {
+      answers: data.answer,
+    },
+  }).exec(callback);
 };
 
 WhatIfModel = mongoose.model('WhatIf', WhatIfSchema);

@@ -1,4 +1,5 @@
 "use strict";
+"use strict";
 
 var handleWhatIf = function handleWhatIf(e) {
   e.preventDefault();
@@ -12,27 +13,32 @@ var handleWhatIf = function handleWhatIf(e) {
   }
 
   console.log($("#whatIfForm").serialize());
+  var token = $("#whatIfForm").serialize().csrf;
   sendAjax('POST', $("#whatIfForm").attr("action"), $("#whatIfForm").serialize(), function () {
-    loadWhatIfsFromServer($("#whatIfForm").serialize().csrf);
+    loadWhatIfsFromServer(token);
   });
+  $("#whatIfForm")[0].reset();
   return false;
 };
 
 var handleAnswer = function handleAnswer(e) {
-  e.preventDefault();
+  e.preventDefault(); //console.log(e.target.answer.value);
+
   $("#errorMessage").animate({
     width: 'hide'
   }, 350);
 
-  if ($("#answer").val() == '') {
-    handleError("All fields are required");
+  if ($("#" + e.target.id).serialize().answer == '') {
+    handleError("Answer fields are required");
     return false;
   }
 
-  console.log($("#answerForm").serialize());
-  sendAjax('POST', $("#answerForm").attr("action"), $("#answerForm").serialize(), function () {
-    loadWhatIfsFromServer($("#answerForm").serialize().csrf);
+  console.log($("#" + e.target.id).serialize());
+  var token = $("#" + e.target.id).serialize().csrf;
+  sendAjax('PUT', $("#" + e.target.id).attr("action"), $("#" + e.target.id).serialize(), function () {
+    loadAllWhatIfsFromServer(token);
   });
+  $("#" + e.target.id)[0].reset();
   return false;
 };
 
@@ -77,24 +83,32 @@ var WhatIfList = function WhatIfList(props) {
 
 
   var whatifNodes = props.whatIfs.map(function (whatif) {
+    //console.log(whatif);
     return (/*#__PURE__*/React.createElement("div", {
         key: whatif._id,
         className: "whatif"
-      }, /*#__PURE__*/React.createElement("h3", null, " ", whatif.question, " "), /*#__PURE__*/React.createElement("h3", null, " ", whatif.author, " "), /*#__PURE__*/React.createElement("h3", null, " ", whatif.createdDate, " "), /*#__PURE__*/React.createElement("form", {
-        id: "deleteForm",
+      }, /*#__PURE__*/React.createElement("h3", null, " ", whatif.question, " "), /*#__PURE__*/React.createElement("h4", null, "Author: ", whatif.author, " "), /*#__PURE__*/React.createElement("h5", null, "Posted on: ", whatif.createdDate, " "), /*#__PURE__*/React.createElement("h4", null, "Answers: "), /*#__PURE__*/React.createElement("ol", null, " ", whatif.answers.map(function (value, index) {
+        return (/*#__PURE__*/React.createElement("li", {
+            key: index
+          }, value)
+        );
+      }), " "), /*#__PURE__*/React.createElement("form", {
+        id: "deleteForm" + whatif._id,
         onSubmit: deleteWhatIf,
         name: "deleteForm",
-        action: "/deleteWhatIf",
+        action: "/maker",
         method: "DELETE",
         className: "deleteForm"
       }, /*#__PURE__*/React.createElement("input", {
         type: "hidden",
         name: "_id",
-        value: whatif._id
+        value: whatif._id,
+        readOnly: true
       }), /*#__PURE__*/React.createElement("input", {
         type: "hidden",
         name: "_csrf",
-        value: props.csrf
+        value: props.csrf || '',
+        readOnly: true
       }), /*#__PURE__*/React.createElement("input", {
         className: "delete",
         type: "submit",
@@ -121,20 +135,30 @@ var WhatIfStats = function WhatIfStats(props) {
 
 
   var whatifNodes = props.whatIfs.map(function (whatif) {
+    //console.log(whatif.e);
     return (/*#__PURE__*/React.createElement("div", {
         key: whatif._id,
         className: "whatif"
-      }, /*#__PURE__*/React.createElement("h3", null, " ", whatif.question, " "), /*#__PURE__*/React.createElement("h3", null, " ", whatif.author, " "), /*#__PURE__*/React.createElement("h3", null, " ", whatif.createdDate, " "), /*#__PURE__*/React.createElement("form", {
-        id: "answerForm",
+      }, /*#__PURE__*/React.createElement("h3", null, " ", whatif.question, " "), /*#__PURE__*/React.createElement("h4", null, "Author: ", whatif.author, " "), /*#__PURE__*/React.createElement("h5", null, " ", whatif.createdDate, " "), /*#__PURE__*/React.createElement("ol", null, " ", whatif.answers.map(function (value, index) {
+        return (/*#__PURE__*/React.createElement("li", {
+            key: index
+          }, value)
+        );
+      }), " "), /*#__PURE__*/React.createElement("form", {
+        id: "answerForm" + whatif._id,
         onSubmit: handleAnswer,
         name: "answerForm",
-        action: "/answerWhatIf",
-        method: "POST",
+        action: "/addAnswer",
+        method: "PUT",
         className: "answerForm"
       }, /*#__PURE__*/React.createElement("input", {
         type: "hidden",
         name: "_csrf",
-        value: props.csrf
+        value: props.csrf || ''
+      }), /*#__PURE__*/React.createElement("input", {
+        type: "hidden",
+        name: "_id",
+        value: whatif._id
       }), /*#__PURE__*/React.createElement("input", {
         id: "answer",
         type: "text",
@@ -174,10 +198,11 @@ var loadAllWhatIfsFromServer = function loadAllWhatIfsFromServer(csrf) {
 };
 
 var deleteWhatIf = function deleteWhatIf(e) {
-  console.log($("#deleteForm").serialize().csrf);
+  console.log($("#" + e.target.id).serialize());
+  var token = $("#" + e.target.id).serialize().csrf;
   e.preventDefault();
-  sendAjax('DELETE', '/maker', $("#deleteForm").serialize(), function () {
-    loadWhatIfsFromServer($("#deleteForm").serialize().csrf);
+  sendAjax('DELETE', '/maker', $("#" + e.target.id).serialize(), function () {
+    loadWhatIfsFromServer(token);
   });
 };
 

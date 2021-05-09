@@ -111,6 +111,11 @@ var SignupWindow = function SignupWindow(props) {
   );
 };
 
+var HomeWindow = function HomeWindow(props) {
+  return (/*#__PURE__*/React.createElement("h1", null, "Welcome to What IF?")
+  );
+};
+
 var createLoginWindow = function createLoginWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(LoginWindow, {
     csrf: csrf
@@ -123,9 +128,16 @@ var createSignupWindow = function createSignupWindow(csrf) {
   }), document.querySelector("#content"));
 };
 
+var createHomeWindow = function createHomeWindow(csrf) {
+  ReactDOM.render( /*#__PURE__*/React.createElement(HomeWindow, {
+    csrf: csrf
+  }), document.querySelector("#content"));
+};
+
 var setup = function setup(csrf) {
   var loginButton = document.querySelector("#loginbutton");
   var signupButton = document.querySelector("#signupButton");
+  var homeButton = document.querySelector("#homeButton");
   signupButton.addEventListener("click", function (e) {
     e.preventDefault();
     createSignupWindow(csrf);
@@ -136,7 +148,12 @@ var setup = function setup(csrf) {
     createLoginWindow(csrf);
     return false;
   });
-  createLoginWindow(csrf); //default view
+  homeButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    createHomeWindow(csrf);
+    return false;
+  });
+  createHomeWindow(csrf); //default view
 };
 
 var getToken = function getToken() {

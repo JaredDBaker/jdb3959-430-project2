@@ -1,3 +1,4 @@
+// const { request } = require('express');
 const models = require('../models');
 
 const { WhatIf } = models;
@@ -9,7 +10,8 @@ const makerPage = (req, res) => {
       return res.status(400).json({ error: 'An error occurred' });
     }
 
-    return res.render('app', { csrfToken: req.csrfToken(), whatIfs: docs });
+    // return res.render('app', { csrfToken: req.csrfToken(), whatIfs: docs });
+    return res.render('app', { whatIfs: docs });
   });
   // res.render('app');
 };
@@ -89,8 +91,23 @@ const deleteWhatIf = (request, response) => {
   });
 };
 
+const addAnswer = (request, response) => {
+  const req = request;
+  const res = response;
+
+  return WhatIf.WhatIfModel.addAnswer(req.body, (err, docs) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).json({ error: 'An error occurred' });
+    }
+
+    return res.json({ whatIf: docs });
+  });
+};
+
 module.exports.makerPage = makerPage;
 module.exports.getWhatIfs = getWhatIfs;
 module.exports.getAllWhatIfs = getAllWhatIfs;
 module.exports.deleteWhatIf = deleteWhatIf;
+module.exports.addAnswer = addAnswer;
 module.exports.make = makeWhatIf;

@@ -4,6 +4,7 @@ html, body {
     margin: 0;
     padding: 0;
     overflow-x: hidden;
+    background-color: #2d2d2a;
 }
 
 #logo {
@@ -17,7 +18,7 @@ html, body {
 nav {
     width: 100%;
     height: 50px;
-    background-color: #55acee;
+    background-color: #C14953;
 }
 
 nav:nth-child(1) {
@@ -28,32 +29,32 @@ nav:nth-child(1) {
     padding: 5px;
     padding-top: 12px;
     padding-left: 20px;
-    color: white;
+    color: #E5DCC5;
     font-size: 1.3em;
     float: left;
 }
 
 .navlink a, .navlink a:link, .navlink a:visited, .navlink a:hover, .navlink a:active {
-    color: white;
+    color: #E5DCC5;
     text-decoration: none;
     padding: 5px;
     border-radius: 4px;
-    background-color: #55acee;
+    background-color: #C14953;
     transition: background-color 0.4s ease;
 }
 
 .navlink a:hover {
     transition: background-color 0.8s ease;
-    background-color: #66bdff;
+    background-color: #4C4C47;
 }
 
 .whatIfForm {
-    border: 2px solid #338acc;
+    border: 2px solid #4c4c47;
     height: 40px;
     width: 1400px;
     margin-top:0px;
     padding-top:10px;
-    background-color: #55acee;
+    background-color: #C14953;
     border-bottom-right-radius: 4px;
     border-top-right-radius: 4px;
 }
@@ -64,7 +65,7 @@ nav:nth-child(1) {
     margin-left: 10px;
     font-size: 1.2em;
     float: left;
-    color: white;
+    color: #E5DCC5;
 }
 
 .whatIfForm input[type=text] {
@@ -75,19 +76,19 @@ nav:nth-child(1) {
     transition: background-color 0.4s ease;
     display: inline;
     width: 90px;
-    background-color: #55acee;
+    background-color: #848FA5;
     border-radius: 2px;
-    color: white;
+    color: #E5DCC5;
     text-decoration: none;
 }
 
 .makewhatIfSubmit:link, .makewhatIfSubmit:visited, .makewhatIfSubmit:hover, .makewhatIfSubmit:active {
-    color: white;
+    color: #E5DCC5;
 }
 
 .makewhatIfSubmit:hover {
     transition: background-color 0.4s ease;
-    background-color: #338acc;
+    background-color: #4c4c47;
 }
 
 .mainForm {
@@ -108,6 +109,7 @@ nav:nth-child(1) {
     margin-right: 10px;
     text-align: right;
     font-size: 1.2em;
+    color: #E5DCC5;
 }
 
 .formSubmit {
@@ -118,21 +120,21 @@ nav:nth-child(1) {
     margin-top: 14px;
     font-size: 1.2em;
     width: 100px;
-    background-color: #55acee;
+    background-color: #848FA5;
     border-radius: 2px;
-    border-color: #66acee;
+    border-color: #4c4c47;
     padding: 3px 0px;
-    color: white;
+    color: #E5DCC5;
     text-decoration: none;
 }
 
 .formSubmit:link, .formSubmit:visited, .formSubmit:hover, .formSubmit:active {
-    color: white;
+    color: #E5DCC5;
 }
 
 .formSubmit:hover {
     transition: background-color 0.4s ease;
-    background-color: #338acc;
+    background-color: #4c4c47;
 }
 
 #user, #pass, #pass2 {
@@ -144,7 +146,7 @@ nav:nth-child(1) {
 
 #user:focus, #pass:focus, #pass2:focus {
     outline: none;
-    box-shadow: 0px 0px 1px 1px #55acee;
+    box-shadow: 0px 0px 1px 1px #C14953;
 }
 
 #whatIfMessage {
@@ -192,7 +194,7 @@ nav:nth-child(1) {
 #whatIf {
     width: 40%;
     min-width: 400px;
-    border: 2px solid #55acee;
+    border: 2px solid #C14953;
     border-radius: 4px;
     margin: 0 auto;
     margin-top: 100px;
@@ -203,9 +205,10 @@ nav:nth-child(1) {
     margin: 0 auto;
     margin-top: 2px;
     margin-bottom: 2px;
-    border: 2px solid #55acee;
+    border: 2px solid #C14953;
     border-radius: 4px;
-    background-color: #55acee;
+    background-color: #C14953;
+    color: #E5DCC5;
     padding: 10px;
     min-height:60px;
     overflow: hidden;
@@ -215,7 +218,7 @@ nav:nth-child(1) {
     transition: border-color 0.2s ease-out;
     border-color: rgba(255,255,255, 0.8);
     transition: background-color 2.6s ease-out;
-    background-color: #66bfff;
+    background-color: #4c4c47;
 }
 
 img.whatIfFace {
@@ -262,9 +265,15 @@ h3.whatIfAuthor {
 }
 
 #whatIfStats {
-    background-color:#55acee;
+    background-color:#C14953;
 
 }
 #stat {
     margin: 0 auto;
+}
+h1{
+    color:#E5DCC5;
+    margin: auto;
+    width: 50%;
+    padding: 5%
 }

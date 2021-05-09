@@ -8,29 +8,31 @@ const handleWhatIf = (e) => {
         return false;
     }
     console.log($("#whatIfForm").serialize());
+    let token = $("#whatIfForm").serialize().csrf;
     sendAjax('POST', $("#whatIfForm").attr("action"), $("#whatIfForm").serialize(), function () {
-        loadWhatIfsFromServer($("#whatIfForm").serialize().csrf);
+        loadWhatIfsFromServer(token);
     });
-
+    $("#whatIfForm")[0].reset();
     return false;
 };
 
 const handleAnswer = (e) => {
     e.preventDefault();
-
+    //console.log(e.target.answer.value);
     $("#errorMessage").animate({width:'hide'},350);
 
-    if($("#answer").val() == '') {
-        handleError("All fields are required");
+    if($("#"+e.target.id).serialize().answer == '') {
+        handleError("Answer fields are required");
         return false;
     }
-    console.log($("#answerForm").serialize());
-    sendAjax('POST', $("#answerForm").attr("action"), $("#answerForm").serialize(), function () {
-        loadWhatIfsFromServer($("#answerForm").serialize().csrf);
+    console.log($("#"+e.target.id).serialize());
+    let token = $("#"+e.target.id).serialize().csrf;
+    sendAjax('PUT', $("#"+e.target.id).attr("action"), $("#"+e.target.id).serialize(), function () {
+        loadAllWhatIfsFromServer(token);
     });
-
+    $("#"+e.target.id)[0].reset();
     return false;
-};
+}; 
 
 const WhatIfForm = (props) => {
     //console.log(props);
@@ -60,22 +62,29 @@ const WhatIfList = function(props) {
             </div>
         );
     }
+ 
     //console.log(props.csrf);
     const whatifNodes = props.whatIfs.map(function(whatif) {
+        //console.log(whatif);
         return (
             <div key={whatif._id} className="whatif">
                 <h3 > {whatif.question} </h3>
-                <h3 > {whatif.author} </h3>
-                <h3 > {whatif.createdDate} </h3>
-                <form id="deleteForm"
+                <h4 >Author: {whatif.author} </h4>
+                <h5 >Posted on: {whatif.createdDate} </h5>
+                <h4>Answers: </h4>
+                <ol > {whatif.answers.map((value, index) => {
+                    return <li key = {index}>{value}</li>
+                })} </ol>
+                {/* <input className="delete" type="submit" value="Delete" onClick={deleteWhatIf}/>       */}
+                <form id={"deleteForm"+whatif._id}
                     onSubmit={deleteWhatIf}
                     name="deleteForm"
-                    action="/deleteWhatIf"
+                    action="/maker"
                     method="DELETE"
                     className="deleteForm"
                 >
-                    <input type="hidden" name="_id" value={whatif._id} />
-                    <input type="hidden" name="_csrf" value={props.csrf} />
+                    <input type="hidden" name="_id" value={whatif._id} readOnly={true} />
+                    <input type="hidden" name="_csrf" value={props.csrf || ''} readOnly={true}/>
                     <input className="delete" type="submit" value="Delete" />                    
                 </form>
 
@@ -100,19 +109,24 @@ const WhatIfStats = function(props) {
     }
     //console.log(props.csrf);
     const whatifNodes = props.whatIfs.map(function(whatif) {
+        //console.log(whatif.e);
         return (
             <div key={whatif._id} className="whatif">
                 <h3 > {whatif.question} </h3>
-                <h3 > {whatif.author} </h3>
-                <h3 > {whatif.createdDate} </h3>
-                <form id="answerForm"
+                <h4 >Author: {whatif.author} </h4>
+                <h5 > {whatif.createdDate} </h5>
+                <ol > {whatif.answers.map((value, index) => {
+                    return <li key = {index}>{value}</li>
+                })} </ol>
+                <form id={"answerForm"+whatif._id}
                     onSubmit={handleAnswer}
                     name="answerForm"
-                    action="/answerWhatIf"
-                    method="POST"
+                    action="/addAnswer"
+                    method="PUT"
                     className="answerForm"
                 >
-                    <input type="hidden" name="_csrf" value={props.csrf} />
+                    <input type="hidden" name="_csrf" value={props.csrf || ''} />
+                    <input type="hidden" name="_id" value={whatif._id} />
                     <input id="answer" type="text" name="answer" placeholder="your answer" />  
                     <input className="answerSubmit" type="submit" value="Answer What If" />                
                 </form>
@@ -146,10 +160,11 @@ const loadAllWhatIfsFromServer = (csrf) => {
 };
 
 const deleteWhatIf = (e) => {
-    console.log($("#deleteForm").serialize().csrf);
+    console.log($("#"+e.target.id).serialize());
+    let token = $("#"+e.target.id).serialize().csrf;
     e.preventDefault();
-    sendAjax('DELETE', '/maker', $("#deleteForm").serialize(), function () {
-        loadWhatIfsFromServer($("#deleteForm").serialize().csrf);
+    sendAjax('DELETE', '/maker', $("#"+e.target.id).serialize(), function () {
+        loadWhatIfsFromServer(token);
     });
 };
 

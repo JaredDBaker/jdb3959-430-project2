@@ -75,6 +75,12 @@ const SignupWindow = (props) => {
         </form>
     );
 };
+
+const HomeWindow = (props) => {
+    return (
+        <h1>Welcome to What IF?</h1>
+    );
+};
  
 const createLoginWindow = (csrf) => {
     ReactDOM.render(
@@ -90,9 +96,17 @@ const createSignupWindow = (csrf) => {
     );
 };
 
+const createHomeWindow = (csrf) => {
+    ReactDOM.render(
+        <HomeWindow csrf={csrf} />,
+        document.querySelector("#content")
+    );
+};
+
 const setup = (csrf) => {
     const loginButton = document.querySelector("#loginbutton");
     const signupButton = document.querySelector("#signupButton");
+    const homeButton = document.querySelector("#homeButton");
 
     signupButton.addEventListener("click", (e) => {
         e.preventDefault();
@@ -105,8 +119,13 @@ const setup = (csrf) => {
         createLoginWindow(csrf);
         return false;
     });
+    homeButton.addEventListener("click", (e) => {
+        e.preventDefault();
+        createHomeWindow(csrf);
+        return false;
+    });
 
-    createLoginWindow(csrf); //default view
+    createHomeWindow(csrf); //default view
 }
 
 const getToken = () => {
