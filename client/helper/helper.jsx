@@ -82,6 +82,7 @@ const loadAllWhatIfsFromServer = (csrf) => {
             <WhatIfSearch whatIfs={data.whatIf} csrf={csrf}/>, document.querySelector('#WhatIfs')
         );
     });
+    createSearchWindow(csrf);
 };
 
 // creates the what if search window
@@ -189,7 +190,7 @@ const createHomeWindow = (csrf) => {
         document.querySelector("#makeWhatIf")
         );
     };
-    loadAllWhatIfsFromServer(csrf)
+    loadPreview(csrf);
 };
 
 const loadPreview = (csrf) => {
