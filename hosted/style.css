@@ -65,12 +65,14 @@ nav:nth-child(1) {
     width: 15%;
     margin-left: 10px;
     font-size: 1.2em;
-    float: left;
+    /* float: left; */
     color: #E5DCC5;
 }
 
 .whatIfForm input[type=text] {
-    float:left;
+    /* float:left; */
+    background-color: #E5DCC5;
+    color:#4C4C47;
 }
 
 .makewhatIfSubmit {
@@ -177,7 +179,7 @@ nav:nth-child(1) {
 #errorMessage {
     font-size: 1.2em;
     font-weight: bold;
-    color: red;
+    color: #C14953;
     font-style: italic;
 }
 
@@ -284,6 +286,7 @@ h1{
     grid-template-columns: 1fr 1fr;
 }
 #explain {
+    padding:15px;
     grid-column: 1;
     color:#E5DCC5;
 }
@@ -312,3 +315,4 @@ main{
 .answers{
     grid-column: 2;
 }
+#content{}

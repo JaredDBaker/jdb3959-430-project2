@@ -15,6 +15,7 @@ const router = (app) => {
   app.put('/addAnswer', controllers.WhatIf.addAnswer);
   app.delete('/maker', mid.requiresLogin, controllers.WhatIf.deleteWhatIf);
   app.get('/', mid.requiresSecure, mid.requireLogout, controllers.Account.loginPage);
+  app.get('*', controllers.Account.errorPage);
 };
 
 module.exports = router;

@@ -1,5 +1,6 @@
 "use strict";
 
+// handles making new what ifs
 var handleWhatIf = function handleWhatIf(e) {
   e.preventDefault();
   $("#errorMessage").animate({
@@ -17,7 +18,8 @@ var handleWhatIf = function handleWhatIf(e) {
   });
   $("#whatIfForm")[0].reset();
   return false;
-};
+}; // This is the form used to create new what ifs
+
 
 var WhatIfForm = function WhatIfForm(props) {
   //console.log(props);
@@ -45,7 +47,8 @@ var WhatIfForm = function WhatIfForm(props) {
       value: "Make What If"
     }))
   );
-};
+}; //Lists out the what ifs of a user
+
 
 var WhatIfList = function WhatIfList(props) {
   //console.log(props);
@@ -101,7 +104,8 @@ var WhatIfList = function WhatIfList(props) {
       className: "whatifList"
     }, whatifNodes)
   );
-};
+}; //loads user specific what ifs form the server
+
 
 var loadWhatIfsFromServer = function loadWhatIfsFromServer(csrf) {
   sendAjax('GET', '/getWhatIfs', null, function (data) {
@@ -111,7 +115,8 @@ var loadWhatIfsFromServer = function loadWhatIfsFromServer(csrf) {
       csrf: csrf
     }), document.querySelector('#WhatIfs'));
   });
-};
+}; // deletes the what if that had its delete button pressed
+
 
 var deleteWhatIf = function deleteWhatIf(e) {
   //console.log($("#"+e.target.id).serialize());
@@ -120,7 +125,8 @@ var deleteWhatIf = function deleteWhatIf(e) {
   sendAjax('DELETE', '/maker', $("#" + e.target.id).serialize(), function () {
     loadWhatIfsFromServer(getToken());
   });
-};
+}; // creates the list window showing all of the current users questions
+
 
 var createListWindow = function createListWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement("h1", null, "All of your What Ifs"), document.querySelector("#Content"));
@@ -132,20 +138,7 @@ var createListWindow = function createListWindow(csrf) {
     csrf: csrf
   }), document.querySelector("#WhatIfs"));
   loadWhatIfsFromServer(csrf);
-}; // const createHomeWindow = (csrf) => {
-//     ReactDOM.render(
-//         <HomeWindow csrf={csrf} />,
-//         document.querySelector("#content")
-//     );
-//     ReactDOM.render(
-//         <hr></hr>, 
-//         document.querySelector("#WhatIfs")
-//     );
-//     ReactDOM.render(
-//         <br></br>, 
-//         document.querySelector("#makeWhatIf")
-//     );
-// };
+}; //sets up all the pages when a user is logged in
 
 
 var setup = function setup(csrf) {
@@ -216,7 +209,8 @@ var sendAjax = function sendAjax(type, action, data, success) {
       handleError(messageObj.error);
     }
   });
-};
+}; // Search page for both users logged in and not
+
 
 var WhatIfSearch = function WhatIfSearch(props) {
   //console.log(props);
@@ -275,7 +269,8 @@ var WhatIfSearch = function WhatIfSearch(props) {
       className: "whatifList"
     }, whatifNodes)
   );
-};
+}; // calls /getAllWhatIfs and renders a WhatIf Search page with the returned data
+
 
 var loadAllWhatIfsFromServer = function loadAllWhatIfsFromServer(csrf) {
   sendAjax('GET', '/getAllWhatIfs', null, function (data) {
@@ -285,7 +280,8 @@ var loadAllWhatIfsFromServer = function loadAllWhatIfsFromServer(csrf) {
       csrf: csrf
     }), document.querySelector('#WhatIfs'));
   });
-};
+}; // creates the what if search window
+
 
 var createSearchWindow = function createSearchWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement("h1", null, "Here is all the What Ifs"), document.querySelector("#Content"));
@@ -301,7 +297,8 @@ var createSearchWindow = function createSearchWindow(csrf) {
     whatIfs: []
   }), document.querySelector("#WhatIfs"));
   loadAllWhatIfsFromServer(csrf);
-};
+}; //handles the answer form data from the search page what ifs
+
 
 var handleAnswer = function handleAnswer(e) {
   e.preventDefault(); //console.log(e.target.answer.value);
@@ -322,21 +319,43 @@ var handleAnswer = function handleAnswer(e) {
   });
   $("#" + e.target.id)[0].reset();
   return false;
-};
+}; // returns the home window
+
 
 var HomeWindow = function HomeWindow(props) {
+  if (props.whatIf === 0) {
+    return (/*#__PURE__*/React.createElement("div", {
+        className: "whatIfStats"
+      }, /*#__PURE__*/React.createElement("h3", {
+        className: "emptyWhat"
+      }, "No What Ifs yet"))
+    );
+  } //let p = props.whatIfs[Math.floor(Math.random() *props.whatIfs.length)];
+
+
+  var whatifNode = props.whatIf.map(function (whatif) {
+    return (/*#__PURE__*/React.createElement("div", {
+        key: whatif._id,
+        className: "whatif"
+      }, /*#__PURE__*/React.createElement("div", {
+        className: "info"
+      }, /*#__PURE__*/React.createElement("h3", null, " ", whatif.question, " "), /*#__PURE__*/React.createElement("h4", null, "Author: ", whatif.author, " "), /*#__PURE__*/React.createElement("h5", null, "Posted on: ", whatif.createdDate, " ")))
+    );
+  });
   return (/*#__PURE__*/React.createElement("section", {
       id: "home"
     }, /*#__PURE__*/React.createElement("div", {
       id: "explain"
-    }, /*#__PURE__*/React.createElement("h1", null, "Welcome to What IF?"), /*#__PURE__*/React.createElement("p", null, "Hello and welcome"), /*#__PURE__*/React.createElement("h3", null, "Use '/getAllWhatIfs' to recieve the list of all the questions Posted")), /*#__PURE__*/React.createElement("div", {
+    }, /*#__PURE__*/React.createElement("h1", null, "Welcome to What IF?"), /*#__PURE__*/React.createElement("p", null, "Hello and welcome to What If? a site dedicated to the question of its name. To the right you'll see an example of one such question.  To which you can answer, and read other's answers.  You can also craft your own questions for others to answer, by making an account."), /*#__PURE__*/React.createElement("ul", null, "Guide:", /*#__PURE__*/React.createElement("li", null, "The Home page is a hub for finding out information and learning to use the site"), /*#__PURE__*/React.createElement("li", null, "The Search page is where you can find all of the What If questions users have asked to browse and answer to your heart content"), /*#__PURE__*/React.createElement("li", null, "The Login Page is where you can access your account if you have one"), /*#__PURE__*/React.createElement("li", null, "If you dont't have and Account go to the Sign Up Page to make one and start questioning"), /*#__PURE__*/React.createElement("li", null, "Once you have an acount you can access the List page which allows you to create your own What Ifs and shows you all of the What Ifs you have made")), /*#__PURE__*/React.createElement("h3", null, "Use '/getAllWhatIfs' to recieve the list of all the questions in JSON")), /*#__PURE__*/React.createElement("div", {
       id: "preview"
-    }, /*#__PURE__*/React.createElement("h1", null, "Preview:")))
+    }, /*#__PURE__*/React.createElement("h1", null, "Preview:"), whatifNode))
   );
-};
+}; // renders out the home window along with login and maker page specific items
+
 
 var createHomeWindow = function createHomeWindow(csrf) {
   ReactDOM.render( /*#__PURE__*/React.createElement(HomeWindow, {
+    whatIf: [],
     csrf: csrf
   }), document.querySelector("#content"));
   ReactDOM.render( /*#__PURE__*/React.createElement("hr", null), document.querySelector("#WhatIfs"));
@@ -346,4 +365,17 @@ var createHomeWindow = function createHomeWindow(csrf) {
   }
 
   ;
+  loadPreview(csrf);
+};
+
+var loadPreview = function loadPreview(csrf) {
+  sendAjax('GET', '/getAllWhatIfs', null, function (data) {
+    //console.log(data);
+    var p = data.whatIf[Math.floor(Math.random() * data.whatIf.length)]; //console.log(p);
+
+    ReactDOM.render( /*#__PURE__*/React.createElement(HomeWindow, {
+      whatIf: [p],
+      csrf: csrf
+    }), document.querySelector('#content'));
+  });
 };

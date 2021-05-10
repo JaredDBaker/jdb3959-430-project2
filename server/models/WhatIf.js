@@ -11,6 +11,7 @@ const convertID = mongoose.Types.ObjectId;
 const setName = (name) => _.escape(name).trim();
 const setQuestion = (question) => _.escape(question).trim();
 
+// Schema for the what ifs
 const WhatIfSchema = new mongoose.Schema({
   author: {
     type: String,
@@ -49,6 +50,7 @@ WhatIfSchema.statics.toAPI = (doc) => ({
   answers: doc.answers,
 });
 
+// finds all the what ifs made by a certain user
 WhatIfSchema.statics.findByOwner = (ownerID, callback) => {
   const search = {
     owner: convertID(ownerID),
@@ -57,8 +59,10 @@ WhatIfSchema.statics.findByOwner = (ownerID, callback) => {
   return WhatIfModel.find(search).select('author question answers createdDate').lean().exec(callback);
 };
 
+// Finds and returns all of the user made what ifs
 WhatIfSchema.statics.findAll = (callback) => WhatIfModel.find().select('author question answers createdDate').lean().exec(callback);
 
+// Deletes a what if by the provided ID
 WhatIfSchema.statics.delete = (id, callback) => {
   // console.log(id);
   const search = {
@@ -68,6 +72,7 @@ WhatIfSchema.statics.delete = (id, callback) => {
   return WhatIfModel.deleteOne(search).exec(callback);
 };
 
+// Adds an Answer to the What If that has the provided ID
 WhatIfSchema.statics.addAnswer = (data, callback) => {
   console.log(data);
   const search = {

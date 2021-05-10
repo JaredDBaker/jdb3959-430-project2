@@ -1,3 +1,4 @@
+// handles making new what ifs
 const handleWhatIf = (e) => {
     e.preventDefault();
 
@@ -15,7 +16,7 @@ const handleWhatIf = (e) => {
     return false;
 };
 
-
+// This is the form used to create new what ifs
 const WhatIfForm = (props) => {
     //console.log(props);
     return (
@@ -34,7 +35,7 @@ const WhatIfForm = (props) => {
     );
 };
 
-
+//Lists out the what ifs of a user
 const WhatIfList = function(props) {
     //console.log(props);
     if(props.whatIfs.length === 0){
@@ -83,8 +84,7 @@ const WhatIfList = function(props) {
     );
 }; 
 
-
-
+//loads user specific what ifs form the server
 const loadWhatIfsFromServer = (csrf) => {
     sendAjax('GET', '/getWhatIfs', null, (data) => {
         //console.log(data);
@@ -94,6 +94,7 @@ const loadWhatIfsFromServer = (csrf) => {
     });
 };
 
+// deletes the what if that had its delete button pressed
 const deleteWhatIf = (e) => {
     //console.log($("#"+e.target.id).serialize());
     //let token = $("#"+e.target.id).serialize().csrf;
@@ -103,7 +104,7 @@ const deleteWhatIf = (e) => {
     });
 };
 
-
+// creates the list window showing all of the current users questions
 const createListWindow = (csrf) => {
     ReactDOM.render(
         <h1>All of your What Ifs</h1>, 
@@ -120,21 +121,8 @@ const createListWindow = (csrf) => {
     loadWhatIfsFromServer(csrf);
 }
 
-// const createHomeWindow = (csrf) => {
-//     ReactDOM.render(
-//         <HomeWindow csrf={csrf} />,
-//         document.querySelector("#content")
-//     );
-//     ReactDOM.render(
-//         <hr></hr>, 
-//         document.querySelector("#WhatIfs")
-//     );
-//     ReactDOM.render(
-//         <br></br>, 
-//         document.querySelector("#makeWhatIf")
-//     );
-// };
 
+//sets up all the pages when a user is logged in
 const setup = function(csrf) {
     const searchButton = document.querySelector("#searchButton");
     const listButton = document.querySelector("#listButton");

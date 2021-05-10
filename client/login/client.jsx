@@ -1,3 +1,4 @@
+//handles a user logging in to their account
 const handleLogin = (e) => {
     e.preventDefault();
 
@@ -14,7 +15,7 @@ const handleLogin = (e) => {
 
     return false;
 };
- 
+// handles the creation of new accounts
 const handleSignup = (e) => {
     e.preventDefault();
 
@@ -34,7 +35,7 @@ const handleSignup = (e) => {
 
     return false;
 };
-
+// login window form
 const LoginWindow = (props) => {
     return (
         <form id="loginForm" name="loginForm"
@@ -56,6 +57,7 @@ const LoginWindow = (props) => {
     );
 };
 
+// Sign up window form
 const SignupWindow = (props) => {
     return (
         <form id="signupForm"
@@ -81,7 +83,7 @@ const SignupWindow = (props) => {
 };
 
 
- 
+ // creates the login window
 const createLoginWindow = (csrf) => {
     ReactDOM.render(
         <LoginWindow csrf={csrf} />,
@@ -92,7 +94,7 @@ const createLoginWindow = (csrf) => {
         document.querySelector("#WhatIfs")
     );
 };
-
+//creates the signin window
 const createSignupWindow = (csrf) => {
     ReactDOM.render(
         <SignupWindow csrf={csrf} />,
@@ -104,44 +106,41 @@ const createSignupWindow = (csrf) => {
     );
 };
 
-const createHomeWindow = (csrf) => {
-    ReactDOM.render(
-        <HomeWindow csrf={csrf} />,
-        document.querySelector("#content")
-    );
-    ReactDOM.render(
-        <hr></hr>, 
-        document.querySelector("#WhatIfs")
-    );
-};
 
+// Sets up the prelogin pages
 const setup = (csrf) => {
     const loginButton = document.querySelector("#loginbutton");
     const signupButton = document.querySelector("#signupButton");
     const homeButton = document.querySelector("#homeButton");
     const searchButton = document.querySelector("#searchButton");
-
-    signupButton.addEventListener("click", (e) => {
+    if(signupButton != null) {
+        signupButton.addEventListener("click", (e) => {
         e.preventDefault();
         createSignupWindow(csrf);
         return false;
-    }); 
+        });     
+    }
 
-    loginButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        createLoginWindow(csrf);
-        return false;
-    });
-    homeButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        createHomeWindow(csrf);
-        return false;
-    });
-    searchButton.addEventListener("click", (e) => {
-        e.preventDefault();
-        createSearchWindow(csrf);
-    });
-
+    if(loginButton != null) {
+        loginButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            createLoginWindow(csrf);
+            return false;
+        });
+    }
+    if(homeButton != null) {
+        homeButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            createHomeWindow(csrf);
+            return false;
+        });
+    }
+    if(searchButton != null) {
+        searchButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            createSearchWindow(csrf);
+        });
+    }
     createHomeWindow(csrf); //default view
 }
 

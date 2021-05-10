@@ -3,6 +3,7 @@ const models = require('../models');
 
 const { WhatIf } = models;
 
+// loads the maker page
 const makerPage = (req, res) => {
   WhatIf.WhatIfModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
@@ -16,6 +17,8 @@ const makerPage = (req, res) => {
   // res.render('app');
 };
 
+// Makes a What if and adds it to the datbase with a unique ID and an owners ID determined
+// by the user that made it
 const makeWhatIf = (req, res) => {
   console.log(req.body);
   if (!req.body.question) {
@@ -48,7 +51,7 @@ const makeWhatIf = (req, res) => {
   return whatIfPromise;
 };
 
-
+// Gets the what ifs of a certain user
 const getWhatIfs = (request, response) => {
   const req = request;
   const res = response;
@@ -63,6 +66,7 @@ const getWhatIfs = (request, response) => {
   });
 };
 
+// Gets all the what ifs
 const getAllWhatIfs = (request, response) => {
   // const req = request;
   const res = response;
@@ -77,6 +81,7 @@ const getAllWhatIfs = (request, response) => {
   });
 };
 
+// Deletes the what If that the ID belongs to
 const deleteWhatIf = (request, response) => {
   const req = request;
   const res = response;
@@ -91,6 +96,7 @@ const deleteWhatIf = (request, response) => {
   });
 };
 
+// Adds and answer to the answer array of the What IF that the ID belongs to
 const addAnswer = (request, response) => {
   const req = request;
   const res = response;
