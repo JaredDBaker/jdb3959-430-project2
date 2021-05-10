@@ -82,7 +82,6 @@ const loadAllWhatIfsFromServer = (csrf) => {
             <WhatIfSearch whatIfs={data.whatIf} csrf={csrf}/>, document.querySelector('#WhatIfs')
         );
     });
-    createSearchWindow(csrf);
 };
 
 // creates the what if search window
@@ -117,7 +116,7 @@ const handleAnswer = (e) => {
     //console.log($("#"+e.target.id).serialize());
     //let token = $("#"+e.target.id).serialize().csrf;
     sendAjax('PUT', $("#"+e.target.id).attr("action"), $("#"+e.target.id).serialize(), function () {
-        loadAllWhatIfsFromServer(getToken());
+        createSearchWindow(getToken());
     });
     $("#"+e.target.id)[0].reset();
     return false; 
