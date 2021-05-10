@@ -102,7 +102,7 @@ const createSearchWindow = (csrf) => {
     );
     loadAllWhatIfsFromServer(csrf);
 };
-
+ 
 //handles the answer form data from the search page what ifs
 const handleAnswer = (e) => {
     e.preventDefault();

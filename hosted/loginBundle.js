@@ -316,7 +316,7 @@ var handleAnswer = function handleAnswer(e) {
 
 
   sendAjax('PUT', $("#" + e.target.id).attr("action"), $("#" + e.target.id).serialize(), function () {
-    loadAllWhatIfsFromServer(getToken());
+    createSearchWindow(getToken());
   });
   $("#" + e.target.id)[0].reset();
   return false;
