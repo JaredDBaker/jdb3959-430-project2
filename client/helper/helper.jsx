@@ -189,7 +189,7 @@ const createHomeWindow = (csrf) => {
         document.querySelector("#makeWhatIf")
         );
     };
-    loadPreview(csrf);
+    loadAllWhatIfsFromServer(csrf)
 };
 
 const loadPreview = (csrf) => {
